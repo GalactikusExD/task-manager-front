@@ -13,11 +13,11 @@ const RegisterPage = () => {
     const onFinish = async (values) => {
         setLoading(true);
         try {
-            registerUser(values);
+            await registerUser(values);
             message.success('Registro exitoso!');
             navigate('/login');
         } catch (error) {
-            message.error('Registro Fallido');
+            message.error('Registro fallido: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -28,17 +28,41 @@ const RegisterPage = () => {
             <Card style={{ width: 400 }}>
                 <Title level={2} style={{ textAlign: 'center' }}>Registro</Title>
                 <Form onFinish={onFinish}>
-                    <Form.Item label="Nombre" name="username" rules={[{ required: true, message: 'Ingrese su nombre!' }]}>
+                    {/* Campo: Nombre de usuario */}
+                    <Form.Item
+                        label="Nombre de usuario"
+                        name="username"
+                        rules={[{ required: true, message: 'Ingrese su nombre de usuario!' }]}
+                    >
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Correo" name="email" rules={[{ required: true, message: 'Ingrese su correo!' }]}>
-                        <Input type="email" />
+
+                    {/* Campo: Correo electrónico */}
+                    <Form.Item
+                        label="Correo electrónico"
+                        name="email"
+                        rules={[
+                            { required: true, message: 'Ingrese su correo!' },
+                            { type: 'email', message: 'Ingrese un correo válido!' },
+                        ]}
+                    >
+                        <Input />
                     </Form.Item>
-                    <Form.Item label="Contraseña" name="password" rules={[{ required: true, message: 'Ingrese su contraseña!' }]}>
+
+                    {/* Campo: Contraseña */}
+                    <Form.Item
+                        label="Contraseña"
+                        name="password"
+                        rules={[{ required: true, message: 'Ingrese su contraseña!' }]}
+                    >
                         <Input.Password />
                     </Form.Item>
+
+                    {/* Botón de registro */}
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" block loading={loading}>Registrar</Button>
+                        <Button type="primary" htmlType="submit" block loading={loading}>
+                            Registrar
+                        </Button>
                     </Form.Item>
                 </Form>
                 <div style={{ textAlign: 'center' }}>
