@@ -28,7 +28,6 @@ const RegisterPage = () => {
             <Card style={{ width: 400 }}>
                 <Title level={2} style={{ textAlign: 'center' }}>Registro</Title>
                 <Form onFinish={onFinish}>
-                    {/* Campo: Nombre de usuario */}
                     <Form.Item
                         label="Nombre de usuario"
                         name="username"
@@ -36,8 +35,6 @@ const RegisterPage = () => {
                     >
                         <Input />
                     </Form.Item>
-
-                    {/* Campo: Correo electrónico */}
                     <Form.Item
                         label="Correo electrónico"
                         name="email"
@@ -48,8 +45,6 @@ const RegisterPage = () => {
                     >
                         <Input />
                     </Form.Item>
-
-                    {/* Campo: Contraseña */}
                     <Form.Item
                         label="Contraseña"
                         name="password"
@@ -57,8 +52,6 @@ const RegisterPage = () => {
                     >
                         <Input.Password />
                     </Form.Item>
-
-                    {/* Botón de registro */}
                     <Form.Item>
                         <Button type="primary" htmlType="submit" block loading={loading}>
                             Registrar

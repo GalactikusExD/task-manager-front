@@ -19,17 +19,17 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
             const { token, user } = response.data;
-            localStorage.setItem('token', token); // Guardar el token en localStorage
-            setUser(user); // Guardar el usuario en el estado
-            return user; // Devuelve el usuario
+            localStorage.setItem('token', token);
+            setUser(user);
+            return { token, user };
         } catch (error) {
             throw new Error(error.response?.data?.error || 'Error en el inicio de sesión');
         }
     };
 
     const logoutUser = () => {
-        localStorage.removeItem('token'); // Eliminar el token
-        setUser(null); // Limpiar el usuario
+        localStorage.removeItem('token');
+        setUser(null);
     };
 
     return (

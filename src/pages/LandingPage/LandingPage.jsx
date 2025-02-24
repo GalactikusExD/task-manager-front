@@ -18,7 +18,7 @@ const LandingPage = () => {
       <Card style={{ width: 400, textAlign: 'center' }}>
         <Title level={2}>Bienvenido a TaskManager</Title>
         <Paragraph>
-          Organiza tus tareas lo mas eficiente posible.
+          Organiza tus tareas lo más eficiente posible.
         </Paragraph>
         <div style={{ marginTop: '20px' }}>
           <Link to="/login">

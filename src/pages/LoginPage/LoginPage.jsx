@@ -14,8 +14,10 @@ const LoginPage = () => {
         setLoading(true);
         try {
             const response = await loginUser(values.email, values.password);
-            if (response) {
+            console.log("Respuesta completa:", response); // Verifica la estructura de la respuesta
+            if (response && response.token) {
                 localStorage.setItem('token', response.token);
+                console.log(response.token);
                 message.success('Sesión iniciada!');
                 navigate('/dashboard');
             } else {
@@ -43,8 +45,6 @@ const LoginPage = () => {
                     >
                         <Input />
                     </Form.Item>
-
-                    {/* Campo: Contraseña */}
                     <Form.Item
                         label="Contraseña"
                         name="password"
@@ -52,8 +52,6 @@ const LoginPage = () => {
                     >
                         <Input.Password />
                     </Form.Item>
-
-                    {/* Botón de inicio de sesión */}
                     <Form.Item>
                         <Button type="primary" htmlType="submit" block loading={loading}>
                             Iniciar sesión

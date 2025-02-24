@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { Button, Typography, Layout, Modal, Form, Input, Select, DatePicker } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 
@@ -19,40 +18,109 @@ const DashboardPage = () => {
   };
 
   const handleOk = async (values) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        console.error("No hay token de autenticación");
+        return;
+    }
+
     const newTask = {
-      nametask: values.nametask,
-      description: values.description,
-      dead_line: values.dead_line,
-      remind_me: values.remind_me,
-      status: values.status,
-      category: values.category,
+        nametask: values.nametask,
+        description: values.description,
+        dead_line: values.dead_line,
+        remind_me: values.remind_me,
+        status: values.status,
+        category: values.category,
+        assignedTo: values.assignedTo || []
     };
 
-    console.log("Datos a enviar:", newTask);
+    try {
+        const response = await fetch("http://localhost:5000/api/tasks", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(newTask),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            setTasks([...tasks, data.task]);
+            setIsModalVisible(false);
+        } else {
+            console.error("Error al guardar la tarea:", data.error);
+        }
+    } catch (error) {
+        console.error("Error al conectar con el backend:", error);
+    }
+};
+const [users, setUsers] = useState([]);
+
+useEffect(() => {
+  const fetchUsers = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/tasks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newTask),
-      });
+        const response = await fetch("http://localhost:5000/api/users", {
+            headers: { Authorization: `Bearer ${token}` },
+        });
 
-      console.log("Respuesta del servidor:", response);
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setTasks([...tasks, data.task]);
-        setIsModalVisible(false);
-      } else {
-        console.error('Error al guardar la tarea:', data.error);
-      }
+        if (response.ok) {
+            const data = await response.json();
+            setUsers(data);
+        } else {
+            console.error("Error al obtener usuarios");
+        }
     } catch (error) {
-      console.error('Error al conectar con el backend:', error);
+        console.error("Error de conexión:", error);
     }
   };
+
+  fetchUsers();
+}, []);
+
+useEffect(() => {
+  const fetchTasks = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+          const response = await fetch("http://localhost:5000/api/tasks", {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          });
+
+          if (response.ok) {
+              const data = await response.json();
+              setTasks(data);
+          } else {
+              console.error("Error al obtener tareas");
+          }
+      } catch (error) {
+          console.error("Error de conexión:", error);
+      }
+  };
+
+  fetchTasks();
+}, []);
+
+const statusTranslations = {
+  "In Progress": "En Progreso",
+  "Revision": "En Revisión",
+  "Paused": "Pausada",
+  "Done": "Finalizada"
+};
+
+const statusColors = {
+  "In Progress": "#FFD700",
+  "Revision": "#87CEEB",
+  "Paused": "#FF6347",
+  "Done": "#32CD32"
+};
 
   return (
     <Content style={{ padding: '24px', backgroundColor: '#fff' }}>
@@ -60,27 +128,41 @@ const DashboardPage = () => {
       <Paragraph>
         Agrega tus tareas y administra las pendientes.
       </Paragraph>
-
-      <div>
-        <Link to="/">
-          <Button type="primary" style={{ marginRight: '10px' }}>
-            Ir al inicio
-          </Button>
-        </Link>
-        <Link to="/login">
-          <Button type="default">Ir al Login</Button>
-        </Link>
-      </div>
-
-      <div style={{ marginTop: '20px' }}>
-        <h3>Tareas:</h3>
-        {tasks.map((task, index) => (
-          <div key={index} style={{ marginBottom: '10px' }}>
-            <div><strong>{task.nametask}</strong> - {task.status}</div>
-          </div>
-        ))}
-      </div>
-
+      <div style={{ marginTop: '20px', display: 'flex', gap: '20px', overflowX: 'auto' }}>
+    {Object.keys(statusTranslations).map((status) => {
+      const filteredTasks = tasks.filter((task) => task.status === status);
+      return (
+        <div key={status} style={{ 
+            minWidth: '250px', 
+            flex: '1', 
+            border: '1px solid #ddd', 
+            borderRadius: '8px', 
+            padding: '10px', 
+            backgroundColor: statusColors[status],
+            color: '#333'
+          }}>
+          <h4 style={{ textAlign: 'center' }}>{statusTranslations[status]}</h4>
+          {filteredTasks.length > 0 ? (
+            filteredTasks.map((task, index) => (
+              <div key={index} style={{ 
+                  border: '1px solid #ccc', 
+                  padding: '10px', 
+                  borderRadius: '5px', 
+                  marginBottom: '10px', 
+                  backgroundColor: '#fff' 
+                }}>
+                <strong>{task.nametask}</strong>
+                <p>{task.description}</p>
+                <p><strong>Fecha límite:</strong> {new Date(task.dead_line).toLocaleString()}</p>
+              </div>
+            ))
+          ) : (
+            <p style={{ textAlign: 'center', color: '#888' }}>Sin tareas</p>
+          )}
+        </div>
+      );
+    })}
+  </div>
       <Button
         type="primary"
         shape="circle"
@@ -133,7 +215,6 @@ const DashboardPage = () => {
           >
             <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
           </Form.Item>
-
           <Form.Item
             name="status"
             label="Estado"
@@ -146,7 +227,19 @@ const DashboardPage = () => {
               <Select.Option value="Revision">En revisión</Select.Option>
             </Select>
           </Form.Item>
-
+          <Form.Item
+            name="assignedTo"
+            label="Asignar a"
+            rules={[{ required: false }]}
+          >
+            <Select mode="multiple" placeholder="Selecciona usuarios">
+              {users.map(user => (
+                <Select.Option key={user._id} value={user._id}>
+                  {user.name} ({user.email})
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
           <Form.Item
             name="category"
             label="Categoría"

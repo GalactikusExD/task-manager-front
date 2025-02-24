@@ -16,6 +16,21 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
+const authenticate = (req, res, next) => {
+    const token = req.headers.authorization;
+    if (!token) {
+        return res.status(401).json({ error: "Acceso denegado. Token no proporcionado." });
+    }
+
+    try {
+        const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET || "secret-key");
+        req.user = decoded;
+        next();
+    } catch (error) {
+        res.status(401).json({ error: "Token inválido" });
+    }
+};
+
 app.post("/api/auth/register", async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -66,11 +81,9 @@ app.post("/api/auth/login", async (req, res) => {
     }
 });
 
-app.post("/api/tasks", async (req, res) => {
+app.post("/api/tasks", authenticate, async (req, res) => {
     try {
-        const { nametask, description, dead_line, remind_me, status, category } = req.body;
-
-        console.log("Datos recibidos:", req.body); // Verifica los datos recibidos
+        const { nametask, description, dead_line, remind_me, status, category, assignedTo  } = req.body;
 
         if (!nametask || !description || !status) {
             return res.status(400).json({ error: "Faltan datos obligatorios" });
@@ -83,14 +96,11 @@ app.post("/api/tasks", async (req, res) => {
             remind_me,
             status,
             category,
+            createdBy: req.user.userId,
+            assignedTo: assignedTo || [],
         });
 
-        console.log("Nueva tarea a insertar:", newTask); // Verifica la tarea antes de guardar
-
         await newTask.save();
-
-        console.log("Tarea guardada correctamente"); // Confirma que la tarea se guardó
-
         res.status(201).json({ message: "Tarea agregada correctamente", task: newTask });
     } catch (error) {
         console.error("Error al agregar la tarea:", error);
@@ -98,10 +108,15 @@ app.post("/api/tasks", async (req, res) => {
     }
 });
 
-app.get("/api/tasks", async (req, res) => {
+app.get("/api/tasks", authenticate, async (req, res) => {
     try {
-        const tasks = await Task.find();
-        console.log("Tareas encontradas:", tasks);
+        const tasks = await Task.find({ 
+            $or: [
+                { createdBy: req.user.userId },
+                { assignedTo: req.user.userId }
+            ]
+        }).populate("createdBy", "name email").populate("assignedTo", "name email");
+
         res.status(200).json(tasks);
     } catch (error) {
         console.error("Error al obtener las tareas:", error);
@@ -109,7 +124,16 @@ app.get("/api/tasks", async (req, res) => {
     }
 });
 
-// Iniciar servidor
+app.get("/api/users", authenticate, async (req, res) => {
+    try {
+        const users = await User.find({}, "name email"); // Solo traer nombre y email
+        res.json(users);
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        res.status(500).json({ error: "Error al obtener usuarios" });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
