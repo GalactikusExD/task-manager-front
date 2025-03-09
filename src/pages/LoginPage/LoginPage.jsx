@@ -1,23 +1,20 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Card, Typography, message } from 'antd';
-import { AuthContext } from '../../AuthContext';
+import { loginUser } from '../../services/authService';
 
 const { Title } = Typography;
 
 const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { loginUser } = useContext(AuthContext);
 
     const onFinish = async (values) => {
         setLoading(true);
         try {
             const response = await loginUser(values.email, values.password);
-            console.log("Respuesta completa:", response); // Verifica la estructura de la respuesta
             if (response && response.token) {
                 localStorage.setItem('token', response.token);
-                console.log(response.token);
                 message.success('Sesión iniciada!');
                 navigate('/dashboard');
             } else {

@@ -1,19 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Card, Typography, message } from 'antd';
-import { AuthContext } from '../../AuthContext';
+import { registerUser } from '../../services/authService';
 
 const { Title } = Typography;
 
 const RegisterPage = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { registerUser } = useContext(AuthContext);
 
     const onFinish = async (values) => {
         setLoading(true);
         try {
-            await registerUser(values);
+            await registerUser({ ...values, role: 1 });
             message.success('Registro exitoso!');
             navigate('/login');
         } catch (error) {
@@ -22,6 +21,7 @@ const RegisterPage = () => {
             setLoading(false);
         }
     };
+
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f0f2f5' }}>
