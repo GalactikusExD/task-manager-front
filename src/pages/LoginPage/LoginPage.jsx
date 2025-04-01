@@ -98,7 +98,7 @@ const LoginPage = () => {
             marginBottom: "8px",
           }}
         />
-        <p>© {new Date().getFullYear()} TaskManager</p>
+        <p>© {new Date().getFullYear()} Lorena</p>
       </footer>
     </div>
   );
