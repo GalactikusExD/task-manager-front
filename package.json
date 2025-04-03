@@ -17,11 +17,7 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-<<<<<<< HEAD
     "start": "serve -s build",
-=======
-    "start": "react-scripts start", 
->>>>>>> appseguridad
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

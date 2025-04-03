@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
 import { Button, Form, Input, Select, List, Typography, message } from "antd";
 import { taskServices } from "../../services/taskService.js";
 
@@ -8,7 +7,6 @@ const { Title,Text } = Typography;
 
 const CreateGroupPage = () => {
   const [form] = Form.useForm();
-//   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [groups, setGroups] = useState([]);
