@@ -4,11 +4,11 @@ import { Button, Form, Input, Select, List, Typography, message } from "antd";
 import { taskServices } from "../../services/taskService.js";
 
 const { Option } = Select;
-const { Title,Text } = Typography;
+const { Title, Text } = Typography;
 
 const CreateGroupPage = () => {
   const [form] = Form.useForm();
-//   const navigate = useNavigate();
+  //   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [groups, setGroups] = useState([]);
@@ -53,6 +53,19 @@ const CreateGroupPage = () => {
     }
   };
 
+  const handleDeleteGroup = async (groupId) => {
+    try {
+      await taskServices.deleteGroup(groupId);
+      message.success("Grupo eliminado con éxito");
+
+      const updatedGroups = await taskServices.getMyGroups();
+      setGroups(updatedGroups);
+    } catch (error) {
+      console.error("Error al eliminar el grupo:", error.message);
+      message.error("Error al eliminar el grupo");
+    }
+  };
+
   return (
     <div style={{ padding: "24px", backgroundColor: "#fff" }}>
       <Title level={2}>Crear Grupo</Title>
@@ -91,11 +104,17 @@ const CreateGroupPage = () => {
         dataSource={groups}
         renderItem={(group) => (
           <List.Item
-            // actions={[
-            //   <Button type="link" onClick={() => navigate(`/groups/${group._id}`)}>
-            //     Ver detalles
-            //   </Button>,
-            // ]}
+            actions={[
+              group.createdBy._id === currentUser?._id && (
+                <Button
+                  type="link"
+                  danger
+                  onClick={() => handleDeleteGroup(group._id)}
+                >
+                  Eliminar
+                </Button>
+              ),
+            ]}
           >
             <List.Item.Meta
               title={group.name}

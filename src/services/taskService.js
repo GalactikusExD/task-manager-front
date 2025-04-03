@@ -64,6 +64,15 @@ export const taskServices = {
     }
   },
 
+  deleteGroup: async (groupId) => {
+    try {
+      const response = await api.delete(`/groups/${groupId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || "Error al eliminar el grupo");
+    }
+  },
+
   updateUser: async (userId, userData) => {
     try {
       const response = await api.put(`/users/${userId}`, userData);
