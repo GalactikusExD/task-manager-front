@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Table, Button, Form, Select, message } from 'antd';
-import { taskServices } from '../../services/taskService';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Table, Button, Form, Select, message, Space } from "antd";
+import { taskServices } from "../../services/taskService";
+import { DeleteOutlined } from "@ant-design/icons";
+// eslint-disable-next-line no-unused-vars
 
 const { Option } = Select;
 
@@ -53,36 +55,52 @@ const AdminPage = () => {
     }
   };
 
+  const handleDeleteUser = async (userId) => {
+    try {
+  
+      await taskServices.deleteUser(userId);
+
+      message.success("Usuario eliminado con éxito");
+      
+    } catch (error) {
+      message.destroy();
+
+      console.error("Error al eliminar usuario:", error.message);
+      message.error(error.message || "Error al eliminar el usuario");
+    }
+  };
   const columns = [
     {
-      title: 'Nombre',
-      dataIndex: 'username',
-      key: 'username',
+      title: "Nombre",
+      dataIndex: "username",
+      key: "username",
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
-      title: 'Rol',
-      dataIndex: 'role',
-      key: 'role',
+      title: "Rol",
+      dataIndex: "role",
+      key: "role",
       render: (text, record) => (
-        <Form
-          initialValues={{ role: record.role }}
-          onFinish={(values) => handleEditUser(record._id, values)}
-        >
-          <Form.Item name="role" noStyle>
-            <Select style={{ width: 150 }}>
-              <Option value={1}>Usuario</Option>
-              <Option value={2}>Administrador</Option>
-            </Select>
-          </Form.Item>
-          <Button type="link" htmlType="submit">
-            Guardar
-          </Button>
-        </Form>
+        <Space size="small">
+          <Form
+            initialValues={{ role: record.role }}
+            onFinish={(values) => handleEditUser(record._id, values)}
+          >
+            <Form.Item name="role" noStyle>
+              <Select style={{ width: 150 }}>
+                <Option value={1}>Usuario</Option>
+                <Option value={2}>Administrador</Option>
+              </Select>
+            </Form.Item>
+            <Button type="link" htmlType="submit">
+              Guardar
+            </Button>
+          </Form>
+        </Space>
       ),
     },
   ];
@@ -92,7 +110,7 @@ const AdminPage = () => {
   }
 
   return (
-    <div style={{ padding: '24px', backgroundColor: '#fff' }}>
+    <div style={{ padding: "24px", backgroundColor: "#fff" }}>
       <h2>Administración de Usuarios</h2>
       <Table dataSource={users} columns={columns} rowKey="_id" />
     </div>

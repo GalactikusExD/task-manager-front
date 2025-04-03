@@ -63,13 +63,33 @@ export const taskServices = {
       throw new Error(error.response?.data?.error || "Error al obtener los grupos del usuario");
     }
   },
-
-  updateUser: async (userId, userData) => {
+  
+  deleteGroup: async (groupId) => {
     try {
-      const response = await api.put(`/users/${userId}`, userData);
+      const response = await api.delete(`/groups/${groupId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || "Error al eliminar el grupo");
+    }
+  },
+
+  updateUser: async (userId) => {
+    try {
+      const response = await api.put(`/users/${userId}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.error || "Error al actualizar el usuario");
     }
   },
+  
+  deleteUser: async (userId) => {
+    try {
+      const response = await api.delete(`/users/${userId}`);
+      console.log(response)
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || "Error al actualizar el usuario");
+    }
+  }
+  
 };

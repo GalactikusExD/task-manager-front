@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Form, Input, Card, Typography, message } from "antd";
 import { loginUser } from "../../services/authService";
-import { Layout, Image } from "antd";
-const { Footer } = Layout;
+import { Image } from "antd";
 const { Title } = Typography;
 
 const LoginPage = () => {
@@ -32,14 +31,14 @@ const LoginPage = () => {
     <div
       style={{
         display: "flex",
-        flexDirection: "column", // Coloca los elementos en columna
-        minHeight: "100vh", // Usa minHeight en lugar de height
+        flexDirection: "column",
+        minHeight: "100vh", 
         backgroundColor: "#f0f2f5",
       }}
     >
       <div
         style={{
-          flex: 1, // Esto hace que el contenido ocupe el espacio disponible
+          flex: 1, 
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -98,7 +97,7 @@ const LoginPage = () => {
             marginBottom: "8px",
           }}
         />
-        <p>© {new Date().getFullYear()} Lorena</p>
+        <p>© {new Date().getFullYear()} TaskManager</p>
       </footer>
     </div>
   );

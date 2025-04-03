@@ -52,6 +52,18 @@ const CreateGroupPage = () => {
       message.error("Error al crear el grupo");
     }
   };
+const handleDeleteGroup = async (groupId) => {
+    try {
+      await taskServices.deleteGroup(groupId);
+      message.success("Grupo eliminado con éxito");
+
+      const updatedGroups = await taskServices.getMyGroups();
+      setGroups(updatedGroups);
+    } catch (error) {
+      console.error("Error al eliminar el grupo:", error.message);
+      message.error("Error al eliminar el grupo");
+    }
+  };
 
   return (
     <div style={{ padding: "24px", backgroundColor: "#fff" }}>
@@ -87,16 +99,22 @@ const CreateGroupPage = () => {
       </Form>
 
       <Title level={2} style={{ marginTop: "24px" }}>Mis Grupos</Title>
-      <List
-        dataSource={groups}
-        renderItem={(group) => (
-          <List.Item
-            // actions={[
-            //   <Button type="link" onClick={() => navigate(`/groups/${group._id}`)}>
-            //     Ver detalles
-            //   </Button>,
-            // ]}
-          >
+            <List
+              dataSource={groups}
+              renderItem={(group) => (
+                <List.Item
+                  actions={[
+                    group.createdBy._id === currentUser?._id && (
+                      <Button
+                        type="link"
+                        danger
+                        onClick={() => handleDeleteGroup(group._id)}
+                      >
+                        Eliminar
+                      </Button>
+                    ),
+                  ]}
+                >
             <List.Item.Meta
               title={group.name}
               description={
