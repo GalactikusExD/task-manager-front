@@ -114,7 +114,7 @@ const CreateGroupPage = () => {
                 <Button
                   type="link"
                   danger
-                  onClick={() => handleDeleteGroup(group._id)}
+                  onClick={(values) => handleDeleteGroup(group._id)}
                 >
                   Eliminar
                 </Button>
