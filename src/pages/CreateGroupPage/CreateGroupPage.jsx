@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Input, Select, List, Typography, message } from "antd";
 import { taskServices } from "../../services/taskService.js";
+import { deleteGroup } from '../../services/groupService';
 
 const { Option } = Select;
 const { Title,Text } = Typography;
@@ -113,7 +114,7 @@ const CreateGroupPage = () => {
                 <Button
                   type="link"
                   danger
-                  onClick={() => handleDeleteGroup(group._id)}
+                  onClick={(values) => handleDeleteGroup(group._id)}
                 >
                   Eliminar
                 </Button>
