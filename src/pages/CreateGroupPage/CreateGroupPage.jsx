@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Input, Select, List, Typography, message } from "antd";
 import { taskServices } from "../../services/taskService.js";
+import { deleteGroup } from '../../services/groupService';
 
 const { Option } = Select;
 const { Title,Text } = Typography;
