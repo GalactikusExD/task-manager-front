@@ -36,7 +36,6 @@ const RegisterPage = () => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-<<<<<<< HEAD
                         label="Correo electrónico"
                         name="email"
                         rules={[
@@ -45,22 +44,6 @@ const RegisterPage = () => {
                         ]}
                     >
                         <Input />
-=======
-                            label="Contraseña"
-                            name="password"
-                            rules={[
-                                { 
-                                    required: true, 
-                                    message: 'Ingrese su contraseña!' 
-                                },
-                                {
-                                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/,
-                                    message: 'La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y un signo'
-                                }
-                            ]}
-                        >
-                            <Input.Password />
->>>>>>> appseguridad
                     </Form.Item>
                     <Form.Item
                         label="Contraseña"
